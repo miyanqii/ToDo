@@ -6,7 +6,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import jp.miyanqii.todo.BR
 import jp.miyanqii.todo.R
 import jp.miyanqii.todo.databinding.ActivityMainBinding
 import jp.miyanqii.todo.viewmodel.MainViewModel
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         b = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mainViewModel = MainViewModel()
-        b.setVariable(BR.mainViewModel, mainViewModel)
+//        b.setVariable(BR.mainViewModel, mainViewModel) TODO
         setSupportActionBar(b.toolbar)
 
         b.fab.setOnClickListener { view ->
