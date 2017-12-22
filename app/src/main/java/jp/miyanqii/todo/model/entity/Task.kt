@@ -11,7 +11,7 @@ import org.threeten.bp.LocalDateTime
  * Created by miyaki on 2017/12/21.
  */
 @Table
-class Task(
+data class Task(
         @Setter("id")
         @PrimaryKey(autoincrement = true)
         val id: Int,
@@ -27,17 +27,17 @@ class Task(
         @Setter("createdDateTime")
         @Column
         @Nullable
-        val createdDateTime: LocalDateTime?,
+        val createdDateTime: LocalDateTime? = null,
 
         @Setter("deadlineDateTime")
         @Column
         @Nullable
-        val deadlineDateTime: LocalDateTime?,
+        val deadlineDateTime: LocalDateTime? = null,
 
         @Setter("finishedDateTime")
         @Column
         @Nullable
-        val finishedDateTime: LocalDateTime?) {
+        val finishedDateTime: LocalDateTime? = null) {
 
     fun isFinished(): Boolean = finishedDateTime == null
 }

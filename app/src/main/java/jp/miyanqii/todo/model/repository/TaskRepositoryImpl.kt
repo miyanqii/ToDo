@@ -1,38 +1,54 @@
 package jp.miyanqii.todo.model.repository
 
-import io.reactivex.Completable
+import com.github.gfx.android.orma.Inserter
 import io.reactivex.Observable
+import io.reactivex.Single
+import jp.miyanqii.todo.model.database.OrmaHolder
 import jp.miyanqii.todo.model.entity.Task
+import org.threeten.bp.LocalDateTime
 
 /**
  * Created by miyaki on 2017/12/21.
  */
-class TaskRepositoryImpl :TaskRepository {
-    override fun add(task: Task): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class TaskRepositoryImpl : TaskRepository {
 
-    override fun fetchAll(): Observable<List<Task>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun add(): Single<Inserter<Task>> = OrmaHolder.ORMA
+            .prepareInsertIntoTaskAsSingle()
 
-    override fun edit(task: Task): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun fetchAll(): Observable<Task> = OrmaHolder.ORMA
+            .selectFromTask()
+            .executeAsObservable()
 
-    override fun toBeDone(task: Task): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun edit(task: Task): Single<Int> = OrmaHolder.ORMA
+            .updateTask()
+            .idEq(task.id)
+            .title(task.title)
+            .memo(task.memo)
+            .createdDateTime(task.createdDateTime)
+            .deadlineDateTime(task.deadlineDateTime)
+            .finishedDateTime(task.finishedDateTime)
+            .executeAsSingle()
 
-    override fun toBeUnDone(task: Task): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
-    override fun remove(task: Task): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun toBeDone(task: Task): Single<Int> = OrmaHolder.ORMA
+            .updateTask()
+            .idEq(task.id)
+            .finishedDateTime(LocalDateTime.now())
+            .executeAsSingle()
 
-    override fun removeAll(): Completable {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun toBeUnDone(task: Task): Single<Int> = OrmaHolder.ORMA
+            .updateTask()
+            .idEq(task.id)
+            .finishedDateTime(null)
+            .executeAsSingle()
+
+    override fun remove(task: Task): Single<Int> = OrmaHolder.ORMA
+            .deleteFromTask()
+            .idEq(task.id)
+            .executeAsSingle()
+
+    override fun removeAll(): Single<Int> = OrmaHolder.ORMA
+            .deleteFromTask()
+            .executeAsSingle()
+
 }
