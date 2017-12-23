@@ -11,7 +11,7 @@ import jp.miyanqii.todo.model.repository.TaskRepositoryImpl
  */
 class CreateTaskUseCase {
     fun createTask(task: Task) {
-        val taskRepository: TaskRepository = TaskRepositoryImpl() //TODO DI
+        val taskRepository: TaskRepository = TaskRepositoryImpl //TODO DI
         taskRepository.add()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

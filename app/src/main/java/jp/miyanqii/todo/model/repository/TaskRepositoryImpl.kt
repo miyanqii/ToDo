@@ -7,10 +7,7 @@ import jp.miyanqii.todo.model.database.OrmaHolder
 import jp.miyanqii.todo.model.entity.Task
 import org.threeten.bp.LocalDateTime
 
-/**
- * Created by miyaki on 2017/12/21.
- */
-class TaskRepositoryImpl : TaskRepository {
+object TaskRepositoryImpl : TaskRepository {
 
     override fun add(): Single<Inserter<Task>> = OrmaHolder.ORMA
             .prepareInsertIntoTaskAsSingle()

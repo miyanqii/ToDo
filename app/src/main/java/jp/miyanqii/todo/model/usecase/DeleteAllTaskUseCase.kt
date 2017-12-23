@@ -9,7 +9,7 @@ import jp.miyanqii.todo.model.repository.TaskRepositoryImpl
  */
 class DeleteAllTaskUseCase {
     fun deleteAll(): Single<Int> {
-        val taskRepository: TaskRepository = TaskRepositoryImpl() //TODO DI
+        val taskRepository: TaskRepository = TaskRepositoryImpl //TODO DI
         return taskRepository.removeAll()
     }
 }
