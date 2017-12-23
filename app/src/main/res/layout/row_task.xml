@@ -12,26 +12,53 @@
         android:id="@+id/row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/colorLightBackground"
         android:foreground="?attr/selectableItemBackground"
         android:onClick="@{itemViewModel::onItemClick}"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/title"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{itemViewModel.task.title}" />
+        <FrameLayout
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:padding="8dp">
 
-        <TextView
-            android:id="@+id/memo"
-            style="@style/TextAppearance.AppCompat.Body1"
-            android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="left|center_vertical"
+                android:src="@drawable/ic_3d_rotation_brown_500_24dp" />
+
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@{itemViewModel.task.memo}" />
+            android:layout_gravity="center_vertical|left"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{itemViewModel.task.title}" />
+
+            <TextView
+                android:id="@+id/memo"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{itemViewModel.task.memo}"
+                android:visibility="@{itemViewModel.task.hasMemo ? android.view.View.VISIBLE : android.view.View.GONE}" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

@@ -18,26 +18,27 @@ data class Task(
 
         @Setter("title")
         @Column
-        val title: String = "",
+        var title: String = "",
 
         @Setter("memo")
         @Column
-        val memo: String = "",
+        var memo: String = "",
 
         @Setter("createdDateTime")
         @Column
         @Nullable
-        val createdDateTime: LocalDateTime? = null,
+        var createdDateTime: LocalDateTime? = null,
 
         @Setter("deadlineDateTime")
         @Column
         @Nullable
-        val deadlineDateTime: LocalDateTime? = null,
+        var deadlineDateTime: LocalDateTime? = null,
 
         @Setter("finishedDateTime")
         @Column
         @Nullable
-        val finishedDateTime: LocalDateTime? = null) {
+        var finishedDateTime: LocalDateTime? = null) {
 
     fun isFinished(): Boolean = finishedDateTime == null
+    fun hasMemo(): Boolean = memo.isNullOrEmpty().not()
 }
