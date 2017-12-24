@@ -5,6 +5,7 @@ import com.github.gfx.android.orma.annotation.Column
 import com.github.gfx.android.orma.annotation.PrimaryKey
 import com.github.gfx.android.orma.annotation.Setter
 import com.github.gfx.android.orma.annotation.Table
+import jp.miyanqii.todo.util.toStringForDisplay
 import org.threeten.bp.LocalDateTime
 
 /**
@@ -12,6 +13,7 @@ import org.threeten.bp.LocalDateTime
  */
 @Table
 data class Task(
+
         @Setter("id")
         @PrimaryKey(autoincrement = true)
         val id: Int,
@@ -39,6 +41,28 @@ data class Task(
         @Nullable
         var finishedDateTime: LocalDateTime? = null) {
 
-    fun isFinished(): Boolean = finishedDateTime == null
+    fun setFinished(finished: Boolean) {
+        if (finished) {
+            finishedDateTime = LocalDateTime.now()
+        } else {
+            finishedDateTime = null
+        }
+    }
+
+    fun isFinished(): Boolean {
+        return finishedDateTime != null
+    }
     fun hasMemo(): Boolean = memo.isNullOrEmpty().not()
+
+    fun getCreatedDateTimeForDisplay(): String? {
+        return createdDateTime?.toStringForDisplay()
+    }
+
+    fun getDeadlineDateTimeForDisplay(): String? {
+        return deadlineDateTime?.toStringForDisplay()
+    }
+
+    fun getFinishedDateTimeForDisplay(): String? {
+        return finishedDateTime?.toStringForDisplay()
+    }
 }

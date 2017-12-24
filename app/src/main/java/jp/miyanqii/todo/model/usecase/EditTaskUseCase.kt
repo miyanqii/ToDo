@@ -13,4 +13,14 @@ class EditTaskUseCase {
         val taskRepository: TaskRepository = TaskRepositoryImpl //TODO DI
         return taskRepository.edit(task)
     }
+
+    fun toBeDone(task: Task): Single<Int> {
+        val taskRepository: TaskRepository = TaskRepositoryImpl //TODO DI
+        return taskRepository.toBeDone(task)
+    }
+
+    fun toBeUnDone(task: Task): Single<Int> {
+        val taskRepository: TaskRepository = TaskRepositoryImpl //TODO DI
+        return taskRepository.toBeUnDone(task)
+    }
 }

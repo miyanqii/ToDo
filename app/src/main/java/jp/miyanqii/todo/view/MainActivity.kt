@@ -1,5 +1,6 @@
 package jp.miyanqii.todo.view
 
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -7,26 +8,38 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import jp.miyanqii.todo.BR
 import jp.miyanqii.todo.BuildConfig
 import jp.miyanqii.todo.R
 import jp.miyanqii.todo.databinding.ActivityMainBinding
-import jp.miyanqii.todo.databinding.FormAddItemBinding
+import jp.miyanqii.todo.databinding.DialogEditTaskBinding
 import jp.miyanqii.todo.model.entity.Task
+import jp.miyanqii.todo.util.toGone
+import jp.miyanqii.todo.util.toVisible
 import jp.miyanqii.todo.viewmodel.MainRecyclerItemViewModel
 import jp.miyanqii.todo.viewmodel.MainViewModel
+import org.threeten.bp.LocalDateTime
 
-class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerItemViewModel.Callback {
-    override fun displayCompleted(message: String) {
-        Snackbar.make(b.toolbar, message, Snackbar.LENGTH_SHORT).show()
+
+class MainActivity : AppCompatActivity(),
+        MainViewModel.Callback,
+        MainRecyclerItemViewModel.Callback {
+
+    companion object {
+        val STATE_INPUT_MODE: String = "STATE_INPUT_MODE"
+        val STATE_TEMP_INPUT_TEXT: String = "STATE_TEMP_INPUT_TEXT"
     }
 
     lateinit var b: ActivityMainBinding
     lateinit var mainViewModel: MainViewModel
     lateinit var mainRecyclerViewAdapter: MainRecyclerViewAdapter
+    private var inputMode: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +53,24 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerIt
         mainRecyclerViewAdapter = MainRecyclerViewAdapter(emptyList(), this)
         b.recycler.adapter = mainRecyclerViewAdapter
 
+        b.input.setOnEditorActionListener({ textView, actionId, keyEvent ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    val text = textView.text.toString()
+                    if (text.isNotBlank()) {
+                        mainViewModel.onAddTask(Task(id = 0, title = text, createdDateTime = LocalDateTime.now()))
+                    }
+                    onInputCancel()
+                    true
+                }
+                else -> false
+            }
+        })
+
+        if (savedInstanceState != null) {
+            inputMode = savedInstanceState?.getBoolean(STATE_INPUT_MODE)
+            b.input.setText(savedInstanceState?.getString(STATE_TEMP_INPUT_TEXT))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,9 +92,19 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerIt
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putBoolean(STATE_INPUT_MODE, inputMode)
+        outState?.putString(STATE_TEMP_INPUT_TEXT, b.input.text.toString())
+    }
+
     override fun onResume() {
         super.onResume()
         mainViewModel.onResume()
+
+        if (inputMode) {
+            onStartCreateTask()
+        }
     }
 
     override fun onPause() {
@@ -71,29 +112,65 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerIt
         mainViewModel.onPause()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            KeyEvent.KEYCODE_BACK -> {
+                if (inputMode) {
+                    onInputCancel()
+                    return true
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
     override fun onItemSelected(task: Task) {
         Log.d(localClassName, "onItemSelected")
 
-        val b: FormAddItemBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.form_add_item, null, false)
+        val b: DialogEditTaskBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_edit_task, null, false)
         b.setVariable(BR.task, task)
         AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_create_brown_500_24dp)
-                .setTitle("タスクを編集")
+                .setTitle(getString(R.string.dialog_edit_task_title))
                 .setView(b.root)
                 .setCancelable(true)
-                .setPositiveButton("Update", { d, _ ->
+                .setPositiveButton(getString(R.string.update_this), { d, _ ->
                     mainViewModel.onItemEdit(task)
                     d.dismiss()
                 })
-                .setNegativeButton("Delete", { d, _ ->
-                    mainViewModel.onItemDelete(task)
+                .setNegativeButton(getString(R.string.delete_this_task), { d, _ ->
+                    showDeleteConfirmation(task)
                     d.dismiss()
                 })
-                .setNeutralButton("閉じる", { d, _ ->
+                .setNeutralButton(getString(R.string.close), { d, _ ->
                     d.dismiss()
                 })
                 .create()
                 .show()
+    }
+
+    private fun showDeleteConfirmation(task: Task) {
+        AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_delete_red_500_24dp)
+                .setTitle(getString(R.string.dialog_delete_task_title))
+                .setMessage(getString(R.string.confirm_delete))
+                .setCancelable(true)
+                .setPositiveButton(getString(R.string.delete), { d, _ ->
+                    mainViewModel.onItemDelete(task)
+                    d.dismiss()
+                })
+                .setNegativeButton(getString(R.string.abort), { d, _ -> d.dismiss() })
+                .create()
+                .show()
+    }
+
+    override fun onToBeDoneClick(task: Task) {
+        Snackbar.make(b.toolbar, getString(R.string.done), Snackbar.LENGTH_SHORT).show()
+        mainViewModel.onToBeDone(task)
+    }
+
+    override fun onToBeUndoneClick(task: Task) {
+        mainViewModel.onToBeUnDone(task)
     }
 
     override fun onListUpdated(tasks: List<Task>) {
@@ -103,25 +180,40 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerIt
     }
 
     override fun onStartCreateTask() {
-        val b: FormAddItemBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.form_add_item, null, false)
 
-        val task = Task(
-                id = 0,
-                title = b.inputTitle.text.toString(),
-                memo = b.inputMemo.text.toString())
+        inputMode = true
 
-        b.setVariable(BR.task, task)
+        b.inputBlock.toVisible()
+        b.darkFilter.toVisible()
+        b.fab.toGone()
 
-        AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_create_brown_500_24dp)
-                .setTitle("タスクを登録")
-                .setView(b.root)
-                .setCancelable(true)
-                .setPositiveButton("Add", { d, _ ->
-                    b.task?.let { mainViewModel.addTask(it) }
-                    d.dismiss()
-                })
-                .create().show()
+        b.inputLayout.apply {
+            requestFocus()
+            performClick()
+        }
+
+        (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(b.input, InputMethodManager.SHOW_IMPLICIT)
+
+    }
+
+
+    override fun onInputCancel() {
+
+        b.inputBlock.toGone()
+        b.darkFilter.toGone()
+        b.fab.toVisible()
+
+        b.input.setText("")
+
+        if (currentFocus != null) {
+            (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(currentFocus.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+
+        inputMode = false
+    }
+
+    override fun onActionCompleted(message: String) {
+        Snackbar.make(b.toolbar, message, Snackbar.LENGTH_SHORT).show()
     }
 
     fun displayAbout() {
@@ -130,23 +222,25 @@ class MainActivity : AppCompatActivity(), MainViewModel.Callback, MainRecyclerIt
                 .setTitle(R.string.app_name)
                 .setMessage(BuildConfig.VERSION_NAME)
                 .setCancelable(true)
-                .setNeutralButton("閉じる", { d, _ -> d.dismiss() })
+                .setNeutralButton(getString(R.string.close), { d, _ -> d.dismiss() })
                 .create()
                 .show()
     }
 
     fun confirmDeleteAll() {
-        AlertDialog.Builder(this)
-                .setMessage("全てのタスクを削除しますか？")
-                .setCancelable(true)
-                .setPositiveButton("全て削除", { d, _ ->
-                    mainViewModel.deleteAll()
-                    d.dismiss()
-                })
-                .setNegativeButton("やめる", { d, _ ->
-                    d.dismiss()
-                })
-                .create()
-                .show()
+        if (mainRecyclerViewAdapter.tasks.isEmpty().not()) {
+            AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_delete_red_500_24dp)
+                    .setTitle(getString(R.string.dialog_delete_all_item_confirm_title))
+                    .setMessage(getString(R.string.delete_all_confirm))
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.delete_all), { d, _ ->
+                        mainViewModel.onDeleteAll()
+                        d.dismiss()
+                    })
+                    .setNegativeButton(getString(R.string.abort), { d, _ -> d.dismiss() })
+                    .create()
+                    .show()
+        }
     }
 }

@@ -11,7 +11,17 @@ class MainRecyclerItemViewModel(val task: Task, val callback: Callback) {
         callback.onItemSelected(task)
     }
 
+    fun onToBeDoneClick(view: View) {
+        callback.onToBeDoneClick(task)
+    }
+
+    fun onToBeUnDoneClick(view: View) {
+        callback.onToBeUndoneClick(task)
+    }
+
     interface Callback {
         fun onItemSelected(task: Task)
+        fun onToBeDoneClick(task: Task)
+        fun onToBeUndoneClick(task: Task)
     }
 }

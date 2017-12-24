@@ -14,6 +14,7 @@ object TaskRepositoryImpl : TaskRepository {
 
     override fun fetchAll(): Observable<Task> = OrmaHolder.ORMA
             .selectFromTask()
+            .orderBy("createdDateTime desc")
             .executeAsObservable()
 
     override fun edit(task: Task): Single<Int> = OrmaHolder.ORMA
