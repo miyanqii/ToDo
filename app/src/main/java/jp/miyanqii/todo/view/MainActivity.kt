@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(),
         mainRecyclerViewAdapter = MainRecyclerViewAdapter(emptyList(), this)
         b.recycler.adapter = mainRecyclerViewAdapter
 
-        b.input.setOnEditorActionListener({ textView, actionId, keyEvent ->
+        b.input.setOnEditorActionListener({ textView, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     val text = textView.text.toString()
