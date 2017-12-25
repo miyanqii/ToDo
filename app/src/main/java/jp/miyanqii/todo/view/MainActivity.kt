@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity(),
         val STATE_LIST_CURRENT: String = "STATE_LIST_CURRENT"
     }
 
-    lateinit var b: ActivityMainBinding
-    lateinit var mainViewModel: MainViewModel
-    lateinit var mainRecyclerViewAdapter: MainRecyclerViewAdapter
+    private lateinit var b: ActivityMainBinding
+    private lateinit var mainViewModel: MainViewModel
+    private lateinit var mainRecyclerViewAdapter: MainRecyclerViewAdapter
     private var inputMode: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity(),
         })
 
         if (savedInstanceState != null) {
-            inputMode = savedInstanceState?.getBoolean(STATE_INPUT_MODE)
-            b.input.setText(savedInstanceState?.getString(STATE_TEMP_INPUT_TEXT))
+            inputMode = savedInstanceState.getBoolean(STATE_INPUT_MODE)
+            b.input.setText(savedInstanceState.getString(STATE_TEMP_INPUT_TEXT))
             b.recycler.scrollToPosition(savedInstanceState.getInt(STATE_LIST_CURRENT))
         }
     }
@@ -203,12 +203,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun showDeadlineSettingDialog(task: Task) {
 
-        val currentDeadline: LocalDateTime?
-        if (task.hasDeadline()) {
-            currentDeadline = task.deadlineDateTime
-        } else {
-            currentDeadline = LocalDateTime.now()
-        }
+        val currentDeadline = if (task.hasDeadline()) task.deadlineDateTime else LocalDateTime.now()
 
         // 日付設定時のリスナ作成
         DatePickerDialog(this,
@@ -285,12 +280,11 @@ class MainActivity : AppCompatActivity(),
         inputMode = false
     }
 
-    override fun onActionCompleted(message: String, undoActoinName: String) {
-        val snackbar = Snackbar.make(b.toolbar, message, Snackbar.LENGTH_LONG)
-        snackbar.show()
+    override fun onActionCompleted(message: String, undoActionName: String) {
+        Snackbar.make(b.toolbar, message, Snackbar.LENGTH_LONG).show()
     }
 
-    fun displayAbout() {
+    private fun displayAbout() {
         AlertDialog.Builder(this)
                 .setIcon(R.mipmap.ic_launcher)
                 .setTitle(R.string.app_name)
@@ -301,7 +295,7 @@ class MainActivity : AppCompatActivity(),
                 .show()
     }
 
-    fun confirmDeleteAll() {
+    private fun confirmDeleteAll() {
         if (mainRecyclerViewAdapter.tasks.isEmpty().not()) {
             AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_delete_red_500_24dp)

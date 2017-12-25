@@ -42,11 +42,7 @@ data class Task(
         var finishedDateTime: LocalDateTime? = null) {
 
     fun setFinished(finished: Boolean) {
-        if (finished) {
-            finishedDateTime = LocalDateTime.now()
-        } else {
-            finishedDateTime = null
-        }
+        finishedDateTime = if (finished) LocalDateTime.now() else null
     }
 
     fun isFinished(): Boolean {
@@ -63,11 +59,7 @@ data class Task(
     }
 
     fun getDeadlineDateTimeForDisplay(): String? {
-        if (hasDeadline()) {
-            return deadlineDateTime?.toStringForDisplay() + "まで"
-        } else {
-            return null
-        }
+        return if (hasDeadline()) deadlineDateTime?.toStringForDisplay() + "まで" else null
     }
 
     fun getFinishedDateTimeForDisplay(): String? {

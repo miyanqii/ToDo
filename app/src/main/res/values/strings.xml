@@ -8,11 +8,9 @@
     <string name="abort">やめる</string>
     <string name="delete_all">全て削除</string>
     <string name="delete_all_confirm">タスクを全て削除しますか？</string>
-    <string name="delete_this_task">削除する</string>
     <string name="update_this">この内容で更新</string>
     <string name="dialog_edit_task_title">タスクを編集</string>
     <string name="dialog_delete_all_item_confirm_title">タスクの全削除</string>
-    <string name="done">Done!</string>
     <string name="dialog_delete_task_title">タスクの削除</string>
     <string name="confirm_delete">削除しますか？</string>
     <string name="delete">削除する</string>

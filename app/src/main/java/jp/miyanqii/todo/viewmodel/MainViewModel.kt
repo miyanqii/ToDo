@@ -10,13 +10,13 @@ import org.threeten.bp.LocalDateTime
 /**
  * Created by miyaki on 2017/12/21.
  */
-class MainViewModel(val callback: Callback) {
+class MainViewModel(private val callback: Callback) {
 
-    lateinit var fetchAllTaskUseCase: FetchAllTaskUseCase
-    lateinit var createTaskUseCase: CreateTaskUseCase
-    lateinit var editTaskUseCase: EditTaskUseCase
-    lateinit var deleteAllTaskUseCase: DeleteAllTaskUseCase
-    lateinit var deleteTaskUseCase: DeleteTaskUseCase
+    private lateinit var fetchAllTaskUseCase: FetchAllTaskUseCase
+    private lateinit var createTaskUseCase: CreateTaskUseCase
+    private lateinit var editTaskUseCase: EditTaskUseCase
+    private lateinit var deleteAllTaskUseCase: DeleteAllTaskUseCase
+    private lateinit var deleteTaskUseCase: DeleteTaskUseCase
 
     fun onResume() {
         onRefreshAll()

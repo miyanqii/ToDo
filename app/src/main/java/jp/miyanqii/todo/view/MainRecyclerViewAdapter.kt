@@ -15,11 +15,11 @@ import jp.miyanqii.todo.viewmodel.MainRecyclerItemViewModel
 /**
  * Created by shuheimiyaki on 2017/12/22.
  */
-class MainRecyclerViewAdapter(var tasks: List<Task>, val callback: MainRecyclerItemViewModel.Callback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MainRecyclerViewAdapter(var tasks: List<Task>, private val callback: MainRecyclerItemViewModel.Callback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         val b = (holder as ViewHolder).b
-        b.setVariable(BR.itemViewModel, MainRecyclerItemViewModel(tasks.get(position), callback))
+        b.setVariable(BR.itemViewModel, MainRecyclerItemViewModel(tasks[position], callback))
         b.executePendingBindings()
     }
 

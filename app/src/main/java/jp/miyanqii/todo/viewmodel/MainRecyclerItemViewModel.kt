@@ -6,7 +6,7 @@ import jp.miyanqii.todo.model.entity.Task
 /**
  * Created by shuheimiyaki on 2017/12/23.
  */
-class MainRecyclerItemViewModel(val task: Task, val callback: Callback) {
+class MainRecyclerItemViewModel(val task: Task, private val callback: Callback) {
     fun onItemClick(view: View) {
         callback.onItemSelected(task)
     }

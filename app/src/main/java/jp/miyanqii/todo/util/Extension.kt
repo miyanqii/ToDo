@@ -10,7 +10,7 @@ import org.threeten.bp.ZoneId
  * Created by shuheimiyaki on 2017/12/23.
  */
 fun LocalDateTime.toStringForDisplay(): String {
-    return DateUtils.getRelativeTimeSpanString(this.toInstant(ZoneId.systemDefault().getRules().getOffset(Instant.EPOCH)).toEpochMilli()).toString()
+    return DateUtils.getRelativeTimeSpanString(this.toInstant(ZoneId.systemDefault().rules.getOffset(Instant.EPOCH)).toEpochMilli()).toString()
 }
 
 fun View.toVisible() {
