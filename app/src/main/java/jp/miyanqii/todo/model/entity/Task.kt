@@ -54,12 +54,20 @@ data class Task(
     }
     fun hasMemo(): Boolean = memo.isNullOrEmpty().not()
 
+    fun hasDeadline(): Boolean {
+        return deadlineDateTime != null
+    }
+
     fun getCreatedDateTimeForDisplay(): String? {
         return createdDateTime?.toStringForDisplay()
     }
 
     fun getDeadlineDateTimeForDisplay(): String? {
-        return deadlineDateTime?.toStringForDisplay()
+        if (hasDeadline()) {
+            return deadlineDateTime?.toStringForDisplay() + "まで"
+        } else {
+            return null
+        }
     }
 
     fun getFinishedDateTimeForDisplay(): String? {

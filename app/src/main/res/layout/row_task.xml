@@ -25,22 +25,22 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/created"
-                style="@style/TextAppearance.AppCompat.Caption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="0dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@{itemViewModel.task.getCreatedDateTimeForDisplay()}"
-                android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/secondary_text}" />
+            <!--<TextView-->
+            <!--android:id="@+id/created"-->
+            <!--style="@style/TextAppearance.AppCompat.Caption"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="0dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="@{itemViewModel.task.createdDateTimeForDisplay}"-->
+            <!--android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/secondary_text}" />-->
 
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextAppearance.AppCompat.Title"
+                style="@style/TextAppearance.AppCompat.Subhead"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -57,8 +57,21 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="0dp"
                 android:text="@{itemViewModel.task.memo}"
-                android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/primary_text}"
+                android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/secondary_text}"
                 android:visibility="@{itemViewModel.task.hasMemo ? android.view.View.VISIBLE : android.view.View.GONE}" />
+
+            <TextView
+                android:id="@+id/deadline"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="0dp"
+                android:text="@{itemViewModel.task.deadlineDateTimeForDisplay}"
+                android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/secondary_text}"
+                android:visibility="@{itemViewModel.task.hasDeadline ? android.view.View.VISIBLE : android.view.View.GONE}" />
 
         </LinearLayout>
 
@@ -67,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="8dp">
+            android:padding="16dp">
 
             <ImageView
                 android:layout_width="24dp"
@@ -86,7 +99,7 @@
             android:layout_gravity="center"
             android:foreground="?attr/selectableItemBackground"
             android:onClick="@{itemViewModel::onToBeUnDoneClick}"
-            android:padding="8dp"
+            android:padding="16dp"
             android:visibility="@{itemViewModel.task.finished ? android.view.View.VISIBLE : android.view.View.GONE}">
 
             <ImageView
@@ -105,7 +118,7 @@
             android:layout_gravity="center"
             android:foreground="?attr/selectableItemBackground"
             android:onClick="@{itemViewModel::onToBeDoneClick}"
-            android:padding="8dp"
+            android:padding="16dp"
             android:visibility="@{itemViewModel.task.finished ? android.view.View.GONE : android.view.View.VISIBLE}">
 
             <ImageView

@@ -1,5 +1,6 @@
 package jp.miyanqii.todo.view
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity(),
     companion object {
         val STATE_INPUT_MODE: String = "STATE_INPUT_MODE"
         val STATE_TEMP_INPUT_TEXT: String = "STATE_TEMP_INPUT_TEXT"
+        val STATE_LIST_CURRENT: String = "STATE_LIST_CURRENT"
     }
 
     lateinit var b: ActivityMainBinding
@@ -72,6 +74,7 @@ class MainActivity : AppCompatActivity(),
         if (savedInstanceState != null) {
             inputMode = savedInstanceState?.getBoolean(STATE_INPUT_MODE)
             b.input.setText(savedInstanceState?.getString(STATE_TEMP_INPUT_TEXT))
+            b.recycler.scrollToPosition(savedInstanceState.getInt(STATE_LIST_CURRENT))
         }
     }
 
@@ -107,6 +110,7 @@ class MainActivity : AppCompatActivity(),
         super.onSaveInstanceState(outState)
         outState?.putBoolean(STATE_INPUT_MODE, inputMode)
         outState?.putString(STATE_TEMP_INPUT_TEXT, b.input.text.toString())
+        outState?.putInt(STATE_LIST_CURRENT, b.recycler.scrollState)
     }
 
     override fun onResume() {
@@ -139,7 +143,9 @@ class MainActivity : AppCompatActivity(),
         Log.d(localClassName, "onItemSelected")
 
         val b: DialogEditTaskBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_edit_task, null, false)
+
         b.setVariable(BR.task, task)
+
         val dialog = AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_create_brown_500_24dp)
                 .setTitle(getString(R.string.dialog_edit_task_title))
@@ -149,16 +155,39 @@ class MainActivity : AppCompatActivity(),
                     mainViewModel.onItemEdit(task)
                     d.dismiss()
                 })
-                .setNegativeButton(getString(R.string.delete_this_task), { d, _ ->
-                    showDeleteConfirmation(task)
-                    d.dismiss()
-                })
-                .setNeutralButton(getString(R.string.close), { d, _ ->
-                    d.dismiss()
-                })
+                .setNeutralButton(getString(R.string.close), { d, _ -> d.dismiss() })
                 .create()
 
-        b.inputMemo.setOnEditorActionListener { textView, actionId, keyEvent ->
+        b.toBeDone.setOnClickListener {
+            b.toBeUndone.toVisible()
+            b.toBeDone.toGone()
+            mainViewModel.onToBeDone(task)
+            dialog.dismiss()
+        }
+
+        b.toBeUndone.setOnClickListener {
+            b.toBeDone.toVisible()
+            b.toBeUndone.toGone()
+            mainViewModel.onToBeUnDone(task)
+            dialog.dismiss()
+        }
+
+        b.noDeadline.setOnClickListener {
+            showDeadlineSettingDialog(task)
+            dialog.dismiss()
+        }
+
+        b.deadline.setOnClickListener {
+            showDeadlineSettingDialog(task)
+            dialog.dismiss()
+        }
+
+        b.delete.setOnClickListener {
+            showDeleteConfirmation(task)
+            dialog.dismiss()
+        }
+
+        b.inputMemo.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
                     mainViewModel.onItemEdit(task)
@@ -169,10 +198,29 @@ class MainActivity : AppCompatActivity(),
             }
         }
 
-
-
-
         dialog.show()
+    }
+
+    private fun showDeadlineSettingDialog(task: Task) {
+
+        val currentDeadline: LocalDateTime?
+        if (task.hasDeadline()) {
+            currentDeadline = task.deadlineDateTime
+        } else {
+            currentDeadline = LocalDateTime.now()
+        }
+
+        // 日付設定時のリスナ作成
+        DatePickerDialog(this,
+                DatePickerDialog.OnDateSetListener { _, y, m, d ->
+                    task.deadlineDateTime = LocalDateTime.of(y, m + 1, d, 23, 59)
+                    mainViewModel.onItemEdit(task)
+
+                },
+                currentDeadline?.year ?: 1990,
+                currentDeadline?.monthValue?.minus(1) ?: 0,
+                currentDeadline?.dayOfMonth ?: 1)
+                .show()
     }
 
     private fun showDeleteConfirmation(task: Task) {
