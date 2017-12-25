@@ -51,6 +51,7 @@ class MainViewModel(val callback: Callback) {
         editTaskUseCase.toBeDone(task)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { callback.onActionCompleted("Done!") }
                 .subscribe { _ -> onRefreshAll() }
     }
 
@@ -59,6 +60,7 @@ class MainViewModel(val callback: Callback) {
         editTaskUseCase.toBeUnDone(task)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { }
                 .subscribe { _ -> onRefreshAll() }
 
     }
@@ -100,7 +102,7 @@ class MainViewModel(val callback: Callback) {
     interface Callback {
         fun onListUpdated(tasks: List<Task>)
         fun onStartCreateTask()
-        fun onActionCompleted(message: String)
+        fun onActionCompleted(message: String, undoActionName: String = "")
         fun onInputCancel()
     }
 }

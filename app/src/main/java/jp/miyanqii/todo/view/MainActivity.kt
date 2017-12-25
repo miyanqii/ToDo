@@ -1,6 +1,7 @@
 package jp.miyanqii.todo.view
 
 import android.content.Context
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -14,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import jp.miyanqii.todo.BR
 import jp.miyanqii.todo.BuildConfig
 import jp.miyanqii.todo.R
@@ -88,8 +90,17 @@ class MainActivity : AppCompatActivity(),
                 displayAbout()
                 true
             }
+            R.id.action_oss -> {
+                displayOSSLicenses()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun displayOSSLicenses() {
+        startActivity(Intent(this, OssLicensesMenuActivity::class.java)
+                .apply { putExtra("title", "オープンソースライセンス") })
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -129,7 +140,7 @@ class MainActivity : AppCompatActivity(),
 
         val b: DialogEditTaskBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_edit_task, null, false)
         b.setVariable(BR.task, task)
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_create_brown_500_24dp)
                 .setTitle(getString(R.string.dialog_edit_task_title))
                 .setView(b.root)
@@ -146,7 +157,22 @@ class MainActivity : AppCompatActivity(),
                     d.dismiss()
                 })
                 .create()
-                .show()
+
+        b.inputMemo.setOnEditorActionListener { textView, actionId, keyEvent ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    mainViewModel.onItemEdit(task)
+                    dialog.dismiss()
+                    true
+                }
+                else -> false
+            }
+        }
+
+
+
+
+        dialog.show()
     }
 
     private fun showDeleteConfirmation(task: Task) {
@@ -165,7 +191,6 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onToBeDoneClick(task: Task) {
-        Snackbar.make(b.toolbar, getString(R.string.done), Snackbar.LENGTH_SHORT).show()
         mainViewModel.onToBeDone(task)
     }
 
@@ -212,8 +237,9 @@ class MainActivity : AppCompatActivity(),
         inputMode = false
     }
 
-    override fun onActionCompleted(message: String) {
-        Snackbar.make(b.toolbar, message, Snackbar.LENGTH_SHORT).show()
+    override fun onActionCompleted(message: String, undoActoinName: String) {
+        val snackbar = Snackbar.make(b.toolbar, message, Snackbar.LENGTH_LONG)
+        snackbar.show()
     }
 
     fun displayAbout() {

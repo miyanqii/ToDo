@@ -16,4 +16,7 @@
     <string name="dialog_delete_task_title">タスクの削除</string>
     <string name="confirm_delete">削除しますか？</string>
     <string name="delete">削除する</string>
+    <string name="menu_main_delete_all">すべて削除</string>
+    <string name="menu_main_about">このアプリについて</string>
+    <string name="menu_main_oss">オープンソースライセンス</string>
 </resources>
