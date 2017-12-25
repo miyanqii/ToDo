@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">ToDo Sample</string>
-    <string name="dialog_edit_task_input_title_hint">内容を編集</string>
-    <string name="dialog_edit_task_input_memo_hint">メモを編集</string>
+    <string name="dialog_edit_task_input_title_hint">内容</string>
+    <string name="dialog_edit_task_input_memo_hint">メモ</string>
     <string name="dialog_edit_task_input_done_hint">完了済みにする</string>
     <string name="activity_main_input_hint">タスクを追加</string>
     <string name="close">閉じる</string>
     <string name="abort">やめる</string>
     <string name="delete_all">全て削除</string>
-    <string name="delete_all_confirm">全てのタスクを削除しますか？</string>
-    <string name="delete_this_task">このタスクを削除する</string>
-    <string name="update_this">この内容で更新する</string>
+    <string name="delete_all_confirm">タスクを全て削除しますか？</string>
+    <string name="delete_this_task">削除</string>
+    <string name="update_this">この内容で更新</string>
     <string name="dialog_edit_task_title">タスクを編集</string>
     <string name="dialog_delete_all_item_confirm_title">タスクの全削除</string>
     <string name="done">Done!</string>
