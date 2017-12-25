@@ -40,10 +40,11 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextAppearance.AppCompat.Subhead"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
+                android:lineSpacingMultiplier="1.25"
                 android:text="@{itemViewModel.task.title}"
                 android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/primary_text}" />
 
@@ -56,6 +57,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="0dp"
+                android:lineSpacingMultiplier="1.25"
                 android:text="@{itemViewModel.task.memo}"
                 android:textColor="@{itemViewModel.task.finished ? @color/colorDarkBackground : @color/secondary_text}"
                 android:visibility="@{itemViewModel.task.hasMemo ? android.view.View.VISIBLE : android.view.View.GONE}" />
