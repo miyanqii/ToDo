@@ -20,4 +20,5 @@
     <string name="set_deadline">期限を設定</string>
     <string name="to_be_done">完了済にする</string>
     <string name="already_done">完了済</string>
+    <string name="clear_deadline">期限をクリア</string>
 </resources>

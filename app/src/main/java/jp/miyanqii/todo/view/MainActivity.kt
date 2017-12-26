@@ -2,6 +2,7 @@ package jp.miyanqii.todo.view
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.DialogInterface.BUTTON_NEUTRAL
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -167,13 +168,15 @@ class MainActivity : AppCompatActivity(),
         b.toBeDone.setOnClickListener {
             b.toBeUndone.toVisible()
             b.toBeDone.toGone()
+            task.setFinished(true)
             b.notifyChange()
-            mainViewModel.onToBeDone(task)
+
         }
 
         b.toBeUndone.setOnClickListener {
             b.toBeDone.toVisible()
             b.toBeUndone.toGone()
+            task.setFinished(false)
             b.notifyChange()
             mainViewModel.onToBeUnDone(task)
         }
@@ -223,6 +226,12 @@ class MainActivity : AppCompatActivity(),
                 currentDeadline?.dayOfMonth ?: 1)
                 .apply {
                     setOnDismissListener { onItemSelected(task) }
+                    setButton(BUTTON_NEUTRAL,
+                            getString(R.string.clear_deadline),
+                            { d, _ ->
+                                task.deadlineDateTime = null
+                                mainViewModel.onItemEdit(task)
+                            })
                     show()
                 }
     }
