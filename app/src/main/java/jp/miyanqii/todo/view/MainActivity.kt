@@ -49,12 +49,17 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
 
         b = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
         mainViewModel = MainViewModel(this)
+
         b.setVariable(BR.mainViewModel, mainViewModel)
+
         setSupportActionBar(b.toolbar)
 
         b.recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         mainRecyclerViewAdapter = MainRecyclerViewAdapter(emptyList(), this)
+
         b.recycler.adapter = mainRecyclerViewAdapter
 
         b.input.setOnEditorActionListener({ textView, actionId, _ ->
@@ -108,9 +113,11 @@ class MainActivity : AppCompatActivity(),
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putBoolean(STATE_INPUT_MODE, inputMode)
-        outState?.putString(STATE_TEMP_INPUT_TEXT, b.input.text.toString())
-        outState?.putInt(STATE_LIST_CURRENT, b.recycler.scrollState)
+        outState?.apply {
+            putBoolean(STATE_INPUT_MODE, inputMode)
+            putString(STATE_TEMP_INPUT_TEXT, b.input.text.toString())
+            putInt(STATE_LIST_CURRENT, b.recycler.scrollState)
+        }
     }
 
     override fun onResume() {
@@ -151,34 +158,35 @@ class MainActivity : AppCompatActivity(),
                 .setTitle(getString(R.string.dialog_edit_task_title))
                 .setView(b.root)
                 .setCancelable(true)
-                .setPositiveButton(getString(R.string.update_this), { d, _ ->
+                .setPositiveButton("OK", { d, _ -> d.dismiss() })
+                .setOnDismissListener {
                     mainViewModel.onItemEdit(task)
-                    d.dismiss()
-                })
-                .setNeutralButton(getString(R.string.close), { d, _ -> d.dismiss() })
+                }
                 .create()
 
         b.toBeDone.setOnClickListener {
             b.toBeUndone.toVisible()
             b.toBeDone.toGone()
+            b.notifyChange()
             mainViewModel.onToBeDone(task)
-            dialog.dismiss()
         }
 
         b.toBeUndone.setOnClickListener {
             b.toBeDone.toVisible()
             b.toBeUndone.toGone()
+            b.notifyChange()
             mainViewModel.onToBeUnDone(task)
-            dialog.dismiss()
         }
 
         b.noDeadline.setOnClickListener {
             showDeadlineSettingDialog(task)
+            b.notifyChange()
             dialog.dismiss()
         }
 
         b.deadline.setOnClickListener {
             showDeadlineSettingDialog(task)
+            b.notifyChange()
             dialog.dismiss()
         }
 
@@ -205,17 +213,18 @@ class MainActivity : AppCompatActivity(),
 
         val currentDeadline = if (task.hasDeadline()) task.deadlineDateTime else LocalDateTime.now()
 
-        // 日付設定時のリスナ作成
         DatePickerDialog(this,
-                DatePickerDialog.OnDateSetListener { _, y, m, d ->
+                { _, y, m, d ->
                     task.deadlineDateTime = LocalDateTime.of(y, m + 1, d, 23, 59)
                     mainViewModel.onItemEdit(task)
-
                 },
                 currentDeadline?.year ?: 1990,
                 currentDeadline?.monthValue?.minus(1) ?: 0,
                 currentDeadline?.dayOfMonth ?: 1)
-                .show()
+                .apply {
+                    setOnDismissListener { onItemSelected(task) }
+                    show()
+                }
     }
 
     private fun showDeleteConfirmation(task: Task) {

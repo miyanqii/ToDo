@@ -28,7 +28,7 @@
 
                 <LinearLayout
                     android:id="@+id/delete"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:foreground="?attr/selectableItemBackground"
@@ -62,7 +62,7 @@
 
                 <LinearLayout
                     android:id="@+id/no_deadline"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:foreground="?attr/selectableItemBackground"
@@ -88,7 +88,7 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="0dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/set_deadline"
                         android:textColor="@color/secondary_text" />
 
@@ -96,7 +96,7 @@
 
                 <LinearLayout
                     android:id="@+id/deadline"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:foreground="?attr/selectableItemBackground"
@@ -122,7 +122,8 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="0dp"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center"
                         android:text="@{task.deadlineDateTimeForDisplay}"
                         android:textColor="@color/colorAccent" />
 
@@ -130,7 +131,7 @@
 
                 <LinearLayout
                     android:id="@+id/to_be_done"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:foreground="?attr/selectableItemBackground"
@@ -156,7 +157,7 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="0dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/to_be_done"
                         android:textColor="@color/secondary_text" />
 
@@ -164,7 +165,7 @@
 
                 <LinearLayout
                     android:id="@+id/to_be_undone"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:foreground="?attr/selectableItemBackground"
@@ -189,7 +190,7 @@
                         android:layout_marginBottom="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="0dp"
+                        android:layout_marginTop="4dp"
                         android:text="@string/already_done"
                         android:textColor="@color/colorAccent" />
 
